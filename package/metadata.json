@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "tilrnz@gmx.net",
+                "Name": "Tino Lorenz"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Notes Plasmoid with directory tree",
+        "EnabledByDefault": true,
+        "Icon": "applications-system",
+        "Id": "com.github.tilorenz.treenotes",
+        "License": "LGPL-2.1+",
+        "Name": "TreeNotes",
+        "Name[x-test]": "xxTreeNotesxx",
+        "Version": "1.0",
+        "Website": "https://plasma.kde.org/"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
