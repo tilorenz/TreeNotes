@@ -1,7 +1,10 @@
-
-add_library(treenotesplugin SHARED treenotesplugin.cpp)
+add_library(treenotesplugin SHARED
+	treenotesplugin.cpp
+	displaykdirmodel.cpp
+)
 
 target_link_libraries(treenotesplugin
+	KF6::KIOWidgets
 	KF6::I18n
 	Qt6::Gui
 	Qt6::Qml

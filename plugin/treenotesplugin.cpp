@@ -4,30 +4,29 @@
 */
 
 #include "treenotesplugin.h"
+#include "displaykdirmodel.h"
 
 // KF
 #include <KLocalizedString>
 // Qt
-#include <QJSEngine>
 #include <QQmlEngine>
-#include <QQmlContext>
 #include <QLatin1String>
 
-static QJSValue singletonTypeExampleProvider(QQmlEngine* engine, QJSEngine* scriptEngine)
-{
-    Q_UNUSED(engine)
+//static QJSValue singletonTypeExampleProvider(QQmlEngine* engine, QJSEngine* scriptEngine)
+//{
+    //Q_UNUSED(engine)
 
-    QJSValue helloWorld = scriptEngine->newObject();
-    helloWorld.setProperty(QLatin1String("text"), i18n("Hello world!"));
-    return helloWorld;
-}
+    //QJSValue helloWorld = scriptEngine->newObject();
+    //helloWorld.setProperty(QLatin1String("text"), i18n("Hello world!"));
+    //return helloWorld;
+//}
 
 
 void TreeNotesPlugin::registerTypes(const char* uri)
 {
     Q_ASSERT(QLatin1String(uri) == QLatin1String("com.github.tilorenz.treenotes"));
 
-    qmlRegisterSingletonType(uri, 1, 0, "HelloWorld", singletonTypeExampleProvider);
+	qmlRegisterType<DisplayKDirModel>(uri, 1, 0, "DirModel");
 }
 
 #include "moc_treenotesplugin.cpp"
