@@ -5,7 +5,6 @@
 
 #include "displaykdirmodel.h"
 
-
 void DisplayKDirModel::setUrl(QUrl url) {
 	if (url == m_url) {
 		return;

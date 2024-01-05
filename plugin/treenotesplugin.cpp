@@ -12,16 +12,6 @@
 #include <QQmlEngine>
 #include <QLatin1String>
 
-//static QJSValue singletonTypeExampleProvider(QQmlEngine* engine, QJSEngine* scriptEngine)
-//{
-    //Q_UNUSED(engine)
-
-    //QJSValue helloWorld = scriptEngine->newObject();
-    //helloWorld.setProperty(QLatin1String("text"), i18n("Hello world!"));
-    //return helloWorld;
-//}
-
-
 void TreeNotesPlugin::registerTypes(const char* uri)
 {
     Q_ASSERT(QLatin1String(uri) == QLatin1String("com.github.tilorenz.treenotes"));
