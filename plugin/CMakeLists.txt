@@ -1,6 +1,7 @@
 add_library(treenotesplugin SHARED
-	treenotesplugin.cpp
 	displaykdirmodel.cpp
+	notemodel.cpp
+	treenotesplugin.cpp
 )
 
 target_link_libraries(treenotesplugin

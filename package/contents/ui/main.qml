@@ -16,8 +16,25 @@ PlasmoidItem {
 	id: root
 
 	TreeNotesPlugin.DirModel {
-		id: dirMod
-		url: new URL("file:///tmp/")
+		id: dirModel
+
+		// handle signals manually to make bidirectional binding
+		onNotePathChanged: noteModel.notePath = notePath
+		onBasePathChanged: noteModel.basePath = basePath
+	}
+
+	TreeNotesPlugin.NoteModel {
+		id: noteModel
+
+		onNotePathChanged: dirModel.notePath = notePath
+		onBasePathChanged: dirModel.basePath = basePath
+	}
+
+	Component.onCompleted: {
+		noteModel.basePath = plasmoid.configuration.basePath || noteModel.getDefaultBasePath()
+		if (plasmoid.configuration.notePath) {
+			noteModel.notePath = plasmoid.configuration.notePath
+		}
 	}
 
 	switchHeight: Kirigami.Units.gridUnit * 10
@@ -104,15 +121,37 @@ PlasmoidItem {
 					}
 				}
 
-				model: dirMod
+				model: dirModel
 				clip: true
 
-				delegate: TreeViewDelegate { }
+				delegate: TreeViewDelegate {
+					onClicked: {
+						console.log('filepath: ', filePath)
+					}
+				}
 			}
 
 			TextArea {
 				id: txt
 				Layout.fillWidth: true
+				text: noteModel.text
+				// use a timer on textChanged.
+				// no reloading doc when changed on disk for now.
+				// if doc is switched, only do a last flush if the timer is active,
+				// this way changes on disk won't be overwritten
+
+				onTextChanged: autoSaveTimer.restart()
+
+				Timer{
+					id: autoSaveTimer
+					onTriggered: {
+						print("Timer saving")
+						docModel.save()
+						//docModel.active = false
+					}
+					//TODO shorter time for testing, use 20s or so for production
+					interval: 10000
+				}
 			}
 		}
     }
