@@ -20,7 +20,7 @@ PlasmoidItem {
 
 		// handle signals manually to make bidirectional binding
 		onNotePathChanged: {
-			console.log('dm np changed')
+			//console.log('dm np changed')
 			noteModel.notePath = notePath
 		}
 		onBasePathChanged: noteModel.basePath = basePath
@@ -31,7 +31,7 @@ PlasmoidItem {
 
 		onNotePathChanged: {
 			dirModel.notePath = notePath
-			console.log('nm np changed')
+			//console.log('nm np changed')
 		}
 		onBasePathChanged: dirModel.basePath = basePath
 	}
@@ -146,28 +146,33 @@ PlasmoidItem {
 				}
 			}
 
-			TextArea {
-				id: txt
+			ScrollView {
+				id: txtScroll
 				Layout.fillWidth: true
-				text: noteModel.text
 
-				onTextChanged: {
-					noteModel.text = text
-					// only start the autosave timer if the text was changed by the user
-					if (!noteModel.textSetFromModel) {
-						autoSaveTimer.restart()
-						noteModel.textSetFromModel = false
-					}
-				}
+				TextArea {
+					id: txt
+					//Layout.fillWidth: true
+					text: noteModel.text
 
-				Timer{
-					id: autoSaveTimer
-					onTriggered: {
-						print("Timer saving")
-						noteModel.save()
+					onTextChanged: {
+						noteModel.text = text
+						// only start the autosave timer if the text was changed by the user
+						if (!noteModel.textSetFromModel) {
+							autoSaveTimer.restart()
+							noteModel.textSetFromModel = false
+						}
 					}
-					//TODO shorter time for testing, use 20s or so for production
-					interval: 4000
+
+					Timer{
+						id: autoSaveTimer
+						onTriggered: {
+							print("Timer saving")
+							noteModel.save()
+						}
+						//TODO shorter time for testing, use 20s or so for production
+						interval: 4000
+					}
 				}
 			}
 		}
