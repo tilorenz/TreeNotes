@@ -18,7 +18,7 @@ class NoteModel: public QObject {
 	Q_PROPERTY(QString notePath READ notePath WRITE setNotePath NOTIFY notePathChanged)
 	Q_PROPERTY(QString basePath READ basePath WRITE setBasePath NOTIFY basePathChanged)
 	Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-	Q_PROPERTY(bool textSetFromModel READ textSetFromModel)
+	Q_PROPERTY(bool textSetFromModel READ textSetFromModel WRITE setTextSetFromModel)
 
 public:
 	NoteModel(QObject *parent = nullptr):
@@ -43,6 +43,10 @@ public:
 
 	bool textSetFromModel() {
 		return m_textSetFromModel;
+	}
+
+	void setTextSetFromModel(bool textSetFromModel) {
+		m_textSetFromModel = textSetFromModel;
 	}
 
 	void setNotePath(const QString &path);

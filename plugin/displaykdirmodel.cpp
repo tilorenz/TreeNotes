@@ -20,7 +20,7 @@ void DisplayKDirModel::setNotePath(const QString &path) {
 		return;
 	}
 	m_notePath = path;
-	Q_EMIT basePathChanged();
+	Q_EMIT notePathChanged();
 }
 
 QString DisplayKDirModel::getPath(int row) {
@@ -31,6 +31,7 @@ QHash<int, QByteArray> DisplayKDirModel::roleNames() const {
     QHash<int, QByteArray> roles;
     roles[DisplayRole] = "display";
     roles[PathRole] = "filePath";
+    roles[IsDirRole] = "isDirectory";
     return roles;
 }
 
@@ -42,6 +43,8 @@ QVariant DisplayKDirModel::data(const QModelIndex &index, int role) const {
 			return item.name();
 		case PathRole:
 			return item.localPath();
+		case IsDirRole:
+			return item.isDir();
 	}
 
 	qWarning() << "Invalid role requested: " << role << "(index: " << index << ")";

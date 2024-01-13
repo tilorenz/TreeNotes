@@ -56,7 +56,9 @@ void NoteModel::setText(const QString &text) {
 }
 
 QString NoteModel::getDefaultBasePath() {
-	return QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+	//return QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+	// for testing, I don't want to screw up my actual documents
+	return QStringLiteral("/home/tino/pg");
 }
 
 void NoteModel::save() {
@@ -77,6 +79,8 @@ void NoteModel::save() {
 		Q_EMIT notePathChanged();
 	}
 
+	// write will append, so clear the file first
+	m_file.resize(0);
 	m_file.write(m_text.toUtf8());
 	m_file.flush();
 }

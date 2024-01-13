@@ -25,6 +25,7 @@ public:
 	enum Roles{
 		DisplayRole = Qt::DisplayRole,
 		PathRole = Qt::UserRole,
+		IsDirRole,
 	};
 
 	QHash<int, QByteArray> roleNames() const override;

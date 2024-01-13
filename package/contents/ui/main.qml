@@ -19,14 +19,20 @@ PlasmoidItem {
 		id: dirModel
 
 		// handle signals manually to make bidirectional binding
-		onNotePathChanged: noteModel.notePath = notePath
+		onNotePathChanged: {
+			console.log('dm np changed')
+			noteModel.notePath = notePath
+		}
 		onBasePathChanged: noteModel.basePath = basePath
 	}
 
 	TreeNotesPlugin.NoteModel {
 		id: noteModel
 
-		onNotePathChanged: dirModel.notePath = notePath
+		onNotePathChanged: {
+			dirModel.notePath = notePath
+			console.log('nm np changed')
+		}
 		onBasePathChanged: dirModel.basePath = basePath
 	}
 
@@ -64,11 +70,6 @@ PlasmoidItem {
 
 		Item {
 			id: topToolBar
-			//anchors {
-				//left: parent.left
-				//top: parent.top
-				//right: parent.right
-			//}
 
 			implicitHeight: toggleTreeBtn.height
 
@@ -124,10 +125,24 @@ PlasmoidItem {
 				model: dirModel
 				clip: true
 
+				selectionBehavior: TableView.SelectionDisabled
+
 				delegate: TreeViewDelegate {
 					onClicked: {
-						console.log('filepath: ', filePath)
+						if (isDirectory) {
+							// TODO somehow handle changing the root folder to directories.
+							// i think clicking the dir should toggle it, so maybe in the right click menu?
+						} else {
+							console.log('filepath: ', filePath)
+							// if the file was modified by the user, save it before switching to the new file and don't carry the timer over
+							if (autoSaveTimer.running) {
+								autoSaveTimer.stop()
+								noteModel.save()
+							}
+							noteModel.notePath = filePath
+						}
 					}
+					highlighted: filePath == noteModel.notePath
 				}
 			}
 
@@ -135,22 +150,24 @@ PlasmoidItem {
 				id: txt
 				Layout.fillWidth: true
 				text: noteModel.text
-				// use a timer on textChanged.
-				// no reloading doc when changed on disk for now.
-				// if doc is switched, only do a last flush if the timer is active,
-				// this way changes on disk won't be overwritten
 
-				onTextChanged: autoSaveTimer.restart()
+				onTextChanged: {
+					noteModel.text = text
+					// only start the autosave timer if the text was changed by the user
+					if (!noteModel.textSetFromModel) {
+						autoSaveTimer.restart()
+						noteModel.textSetFromModel = false
+					}
+				}
 
 				Timer{
 					id: autoSaveTimer
 					onTriggered: {
 						print("Timer saving")
-						docModel.save()
-						//docModel.active = false
+						noteModel.save()
 					}
 					//TODO shorter time for testing, use 20s or so for production
-					interval: 10000
+					interval: 4000
 				}
 			}
 		}
