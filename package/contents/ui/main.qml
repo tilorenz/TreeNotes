@@ -31,9 +31,13 @@ PlasmoidItem {
 
 		onNotePathChanged: {
 			dirModel.notePath = notePath
+			plasmoid.configuration.notePath = notePath
 			//console.log('nm np changed')
 		}
-		onBasePathChanged: dirModel.basePath = basePath
+		onBasePathChanged: {
+			dirModel.basePath = basePath
+			plasmoid.configuration.basePath = basePath
+		}
 	}
 
 	Component.onCompleted: {
@@ -158,11 +162,15 @@ PlasmoidItem {
 					onTextChanged: {
 						noteModel.text = text
 						// only start the autosave timer if the text was changed by the user
+						// this prevents overwriting the previously open file since it may have changed on disk
 						if (!noteModel.textSetFromModel) {
 							autoSaveTimer.restart()
 							noteModel.textSetFromModel = false
 						}
 					}
+
+					textFormat: (noteModel.notePath.endsWith(".md") && plasmoid.configuration.renderMarkdown) ? TextEdit.MarkdownText : TextEdit.PlainText
+					wrapMode: plasmoid.configuration.wrapLines ? TextEdit.Wrap : TextEdit.NoWrap
 
 					Timer{
 						id: autoSaveTimer

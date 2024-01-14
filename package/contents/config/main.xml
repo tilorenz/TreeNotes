@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+	http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+<kcfgfile name=""/>
+	<group name="General">
+		<entry name="basePath" type="Path">
+			<label>The root of the tree view, also where new notes will be autosaved</label>
+			<default></default>
+		</entry>
+		<entry name="notePath" type="Path">
+			<label>The path of the last opened note</label>
+			<default></default>
+		</entry>
+		<entry name="wrapLines" type="Bool">
+			<label>Whether to wrap long text lines (or have horizontal scrolling)</label>
+			<default>true</default>
+		</entry>
+		<entry name="renderMarkdown" type="Bool">
+			<label>Whether to render Markdown in Notes (default off because it doesn't work interactively)</label>
+			<default>false</default>
+		</entry>
+	</group>
+</kcfg>
+
