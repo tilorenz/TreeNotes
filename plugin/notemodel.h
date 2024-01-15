@@ -11,6 +11,7 @@
 #include <QByteArray>
 #include <QUrl>
 #include <qtmetamacros.h>
+#include <QFileSystemWatcher>
 
 class NoteModel: public QObject {
 	Q_OBJECT
@@ -24,9 +25,11 @@ public:
 	NoteModel(QObject *parent = nullptr):
 		QObject(parent),
 		m_file(QFile(this)),
-		m_textSetFromModel(false)
+		m_watcher(this),
+		m_textSetFromModel(false),
+		m_dirty(false)
 	{
-
+		connect(&m_watcher, &QFileSystemWatcher::fileChanged, this, &NoteModel::handleFileChangedOnDisk);
 	}
 
 	QString notePath() {
@@ -60,17 +63,25 @@ public:
 	// reasonably sized text files but prevent crashes when accidentally clicking on a 10GB file
 	const static int MAX_FILE_SIZE = 100000;
 
+public Q_SLOTS:
+	void handleFileChangedOnDisk(const QString &filePath);
+
 Q_SIGNALS:
 	void notePathChanged();
 	void basePathChanged();
 	void textChanged();
 
 private:
+	// returns a path like m_basePath/Note<datetime>.md where things can be saved
+	QString getAutosavePath();
+
 	QFile m_file;
+	QFileSystemWatcher m_watcher;
 	QString m_text;
 	QString m_notePath;
 	QString m_basePath;
 	bool m_textSetFromModel;
+	bool m_dirty; // if we have unsaved changes
 };
 
 #endif
