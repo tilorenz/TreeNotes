@@ -131,11 +131,19 @@ void NoteModel::handleFileChangedOnDisk(const QString &filePath) {
 		// looks like the file has been moved or deleted.
 		// inform the user, there's not much more we can do here (I think)
 		// if the file is dirty, it'll be autosaved, otherwise nothing else needs to happen
-		// TODO make proper warning (in plasmoid or desktop notification or sth)
 		qWarning() << "The open file has been moved or deleted.";
 		if (m_watcher.files().contains(m_notePath)) {
 			m_watcher.removePath(m_notePath);
 		}
+
+		m_notePath = QStringLiteral("");
+		Q_EMIT notePathChanged();
+		// writing to a file that existed when it was opened and was then deleted doesn't seem to work,
+		// and we wouldn't want to write to (and thereby recreate) the file the user just moved
+		// anyways. so just close it, if it's dirty, it'll get saved to fallback.
+		m_file.close();
+		Q_EMIT notificationForUser(QStringLiteral("The open note has been moved or deleted"));
+		return;
 	}
 
 	// file is still there, so it was modified
@@ -150,6 +158,7 @@ void NoteModel::handleFileChangedOnDisk(const QString &filePath) {
 			return;
 		}
 		Q_EMIT notePathChanged();
+		Q_EMIT notificationForUser(QStringLiteral("Note file changed on disk while editing note, saving edits to ") + m_notePath);
 		qWarning() << "Note file changed on disk while editing note, saving edits to " << m_notePath;
 	} else {
 		// we have no unsaved edits, so just reload the file

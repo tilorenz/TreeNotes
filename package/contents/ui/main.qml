@@ -87,6 +87,16 @@ PlasmoidItem {
 					text: fileTree.expanded ? "Collapse File Tree" : "Expand File tree"
 				}
 			}
+			//PlasmaComponents.ToolButton {
+				//id: expbtn
+				//anchors.left: toggleTreeBtn.right
+				//icon.name: fileTree.expanded ? "sidebar-collapse" : "sidebar-expand"
+				//focusPolicy: Qt.TabFocus
+				//onClicked: notificationBar.expanded = !notificationBar.expanded
+				//PlasmaComponents.ToolTip{
+					//text: "expand"
+				//}
+			//}
 		}
 
 		SplitView {
@@ -181,6 +191,46 @@ PlasmoidItem {
 						//TODO shorter time for testing, use 20s or so for production
 						interval: 4000
 					}
+				}
+			}
+		}
+
+		RowLayout {
+			id: notificationBar
+			property bool expanded: false
+			clip: true
+			Layout.maximumHeight: expanded ? Math.max(notificationLbl.implicitHeight, closeNotificationBtn.implicitHeight) : 0
+			Layout.maximumWidth: parent.width
+
+			Behavior on Layout.maximumHeight {
+				NumberAnimation {
+					duration: Kirigami.Units.shortDuration
+					easing.type: Easing.InOutQuad
+				}
+			}
+
+			Label {
+				id: notificationLbl
+				Layout.maximumWidth: parent.width - closeNotificationBtn.implicitWidth - parent.spacing
+				wrapMode: Text.Wrap
+
+				Connections {
+					target: noteModel
+					function onNotificationForUser(message) {
+						notificationLbl.text = message
+						notificationBar.expanded = true
+					}
+				}
+			}
+
+			PlasmaComponents.ToolButton {
+				id: closeNotificationBtn
+				Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+				icon.name: "dialog-close"
+				focusPolicy: Qt.TabFocus
+				onClicked: notificationBar.expanded = false
+				PlasmaComponents.ToolTip{
+					text: "Close notification"
 				}
 			}
 		}

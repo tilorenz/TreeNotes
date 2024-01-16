@@ -70,6 +70,7 @@ Q_SIGNALS:
 	void notePathChanged();
 	void basePathChanged();
 	void textChanged();
+	void notificationForUser(const QString &message);
 
 private:
 	// returns a path like m_basePath/Note<datetime>.md where things can be saved
