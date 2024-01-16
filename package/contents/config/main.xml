@@ -21,6 +21,10 @@
 			<label>Whether to render Markdown in Notes (default off because it doesn't work interactively)</label>
 			<default>false</default>
 		</entry>
+		<entry name="pin" type="Bool">
+			<label>Keep the plasmoid open</label>
+			<default>false</default>
+		</entry>
 	</group>
 </kcfg>
 

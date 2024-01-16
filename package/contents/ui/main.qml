@@ -14,6 +14,7 @@ import com.github.tilorenz.treenotes as TreeNotesPlugin
 
 PlasmoidItem {
 	id: root
+	hideOnWindowDeactivate: !Plasmoid.configuration.pin
 
 	TreeNotesPlugin.DirModel {
 		id: dirModel
@@ -72,14 +73,15 @@ PlasmoidItem {
 		Layout.preferredHeight: Kirigami.Units.gridUnit * 25
 		Layout.preferredWidth: Kirigami.Units.gridUnit * 25
 
-		Item {
+		RowLayout {
 			id: topToolBar
 
 			implicitHeight: toggleTreeBtn.height
+			Layout.preferredWidth: parent.width
 
 			PlasmaComponents.ToolButton {
 				id: toggleTreeBtn
-				anchors.left: parent.left
+				Layout.alignment: Qt.AlignLeft
 				icon.name: fileTree.expanded ? "sidebar-collapse" : "sidebar-expand"
 				focusPolicy: Qt.TabFocus
 				onClicked: fileTree.toggle()
@@ -87,16 +89,34 @@ PlasmoidItem {
 					text: fileTree.expanded ? "Collapse File Tree" : "Expand File tree"
 				}
 			}
+
 			//PlasmaComponents.ToolButton {
 				//id: expbtn
 				//anchors.left: toggleTreeBtn.right
 				//icon.name: fileTree.expanded ? "sidebar-collapse" : "sidebar-expand"
 				//focusPolicy: Qt.TabFocus
-				//onClicked: notificationBar.expanded = !notificationBar.expanded
+				//onClicked: console.log("exp: ", Plasmoid.formFactor, Plasmoid.location)
 				//PlasmaComponents.ToolTip{
 					//text: "expand"
 				//}
 			//}
+
+			PlasmaComponents.ToolButton {
+				id: pinButton
+				// TODO only show when expanded from panel (use Plasmoid.location ?)
+				//visible:
+				Layout.alignment: Qt.AlignRight
+				checkable: true
+				checked: Plasmoid.configuration.pin
+				onToggled: Plasmoid.configuration.pin = checked
+				icon.name: "window-pin"
+
+				display: PlasmaComponents.AbstractButton.IconOnly
+				text: "Keep Open"
+				PlasmaComponents.ToolTip {
+					text: parent.text
+				}
+			}
 		}
 
 		SplitView {
