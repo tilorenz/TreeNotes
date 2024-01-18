@@ -90,6 +90,17 @@ PlasmoidItem {
 				}
 			}
 
+			PlasmaComponents.ToolButton {
+				id: cdUpButton
+				Layout.alignment: Qt.AlignLeft
+				icon.name: "go-up"
+				focusPolicy: Qt.TabFocus
+				onClicked: dirModel.cdUp()
+				PlasmaComponents.ToolTip{
+					text: "Directory up"
+				}
+			}
+
 			//PlasmaComponents.ToolButton {
 				//id: expbtn
 				//anchors.left: toggleTreeBtn.right
@@ -160,12 +171,13 @@ PlasmoidItem {
 				clip: true
 
 				selectionBehavior: TableView.SelectionDisabled
+				// otherwise, pressAndHold doesn't work
+				pointerNavigationEnabled: false
 
 				delegate: TreeViewDelegate {
 					onClicked: {
 						if (isDirectory) {
-							// TODO somehow handle changing the root folder to directories.
-							// i think clicking the dir should toggle it, so maybe in the right click menu?
+							treeView.toggleExpanded(row)
 						} else {
 							console.log('filepath: ', filePath)
 							// if the file was modified by the user, save it before switching to the new file and don't carry the timer over
@@ -177,6 +189,66 @@ PlasmoidItem {
 						}
 					}
 					highlighted: filePath == noteModel.notePath
+
+					function showContextMenu() {
+						contextMenu.path = filePath
+						contextMenu.isDirectory = isDirectory
+						contextMenu.popup()
+						//if (isDirectory) {
+
+						//} else {
+
+						//}
+					}
+
+					autoRepeat: false
+					onPressAndHold: showContextMenu()
+
+					TapHandler {
+						acceptedButtons: Qt.RightButton
+						onTapped: {
+							//console.log('th:', filePath)
+							parent.showContextMenu()
+						}
+					}
+				}
+
+				// to get a normal KDE menu, see KFileItemActions
+				Menu {
+					id: contextMenu
+					property string path
+					property bool isDirectory
+					MenuItem {
+						text: "Open externally"
+						onTriggered: {
+							dirModel.openExternally(contextMenu.path)
+						}
+					}
+					MenuItem {
+						text: "Open containing folder externally"
+						onTriggered: {
+							dirModel.openContainingFolder(contextMenu.path)
+						}
+					}
+					MenuItem {
+						text: "New note"
+						onTriggered: {
+							dirModel.newFile(contextMenu.path, "miau.md")
+						}
+					}
+					MenuItem {
+						text: "New directory"
+						onTriggered: {
+							dirModel.newDir(contextMenu.path, "my dir")
+						}
+					}
+					MenuItem {
+						text: "Set as root directory"
+						visible: contextMenu.isDirectory
+						onTriggered: {
+							dirModel.basePath = contextMenu.path
+						}
+					}
 				}
 			}
 

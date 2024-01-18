@@ -8,6 +8,7 @@
 
 #include <KDirModel>
 #include <QUrl>
+#include <QDir>
 
 class DisplayKDirModel: public KDirModel {
 	Q_OBJECT
@@ -48,13 +49,22 @@ public:
 		return 1;
 	}
 
-	Q_INVOKABLE QString getPath(int row);
+	Q_INVOKABLE void openExternally(const QString &path);
+	Q_INVOKABLE void openContainingFolder(const QString &path);
+	Q_INVOKABLE void newFile(const QString &dirPath, const QString &name);
+	Q_INVOKABLE void newDir(const QString &dirPath, const QString &name);
+
+	Q_INVOKABLE void cdUp();
 
 Q_SIGNALS:
 	void notePathChanged();
 	void basePathChanged();
 
 private:
+	// if path is a directory, it is returned.
+	// if path is a file, its containing directory is returned.
+	static QDir getBaseDir(const QString &path);
+
 	QString m_notePath;
 	QString m_basePath;
 };
