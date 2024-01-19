@@ -233,13 +233,13 @@ PlasmoidItem {
 					MenuItem {
 						text: "New note"
 						onTriggered: {
-							dirModel.newFile(contextMenu.path, "miau.md")
+							nameQuerySheet.show(contextMenu.path, false)
 						}
 					}
 					MenuItem {
 						text: "New directory"
 						onTriggered: {
-							dirModel.newDir(contextMenu.path, "my dir")
+							nameQuerySheet.show(contextMenu.path, true)
 						}
 					}
 					MenuItem {
@@ -323,6 +323,59 @@ PlasmoidItem {
 				onClicked: notificationBar.expanded = false
 				PlasmaComponents.ToolTip{
 					text: "Close notification"
+				}
+			}
+		}
+
+		Kirigami.OverlaySheet {
+			id: nameQuerySheet
+			property bool isForDir: false
+			property string path
+
+			function show(path, isForDir) {
+				nameQuerySheet.path = path
+				nameQuerySheet.isForDir = isForDir
+				nameInputField.text = ""
+				visible = true
+			}
+
+			title: isForDir ? "Create new Directory" :  "Create new Note"
+			implicitWidth: fRep.width * 0.8
+
+			ColumnLayout {
+				id: dialogColumn
+
+				TextField {
+					id: nameInputField
+					Layout.fillWidth: true
+					placeholderText: nameQuerySheet.isForDir ? "DirectoryName" : "FileName.md"
+				}
+
+				RowLayout {
+					id: dialogButtonRow
+					Layout.fillWidth: true
+					Layout.alignment: Qt.AlignRight
+
+					PlasmaComponents.ToolButton {
+						text: "Ok"
+						icon.name: "dialog-ok"
+						Layout.alignment: Qt.AlignRight
+						enabled: nameInputField.text.length > 0
+						onClicked: {
+							if (nameQuerySheet.isForDir) {
+								dirModel.newDir(contextMenu.path, nameInputField.text)
+							} else {
+								dirModel.newFile(contextMenu.path, nameInputField.text)
+							}
+							nameQuerySheet.visible = false
+						}
+					}
+					PlasmaComponents.ToolButton {
+						text: "Cancel"
+						icon.name: "dialog-cancel"
+						Layout.alignment: Qt.AlignRight
+						onClicked: nameQuerySheet.visible = false
+					}
 				}
 			}
 		}
