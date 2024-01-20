@@ -78,7 +78,8 @@ void DisplayKDirModel::newFile(const QString &dirPath, const QString &name) {
 	path += QChar::fromLatin1('/') + name;
 	QFile file(path);
 	if (file.exists()) {
-		qWarning() << "file " << path << " already exists";
+		Q_EMIT notificationForUser(QStringLiteral("%1 already exists").arg(path));
+		//qWarning() << "File " << path << " already exists";
 		return;
 	}
 	if (!file.open(QIODevice::WriteOnly | QIODevice::NewOnly)) {
@@ -91,7 +92,8 @@ void DisplayKDirModel::newFile(const QString &dirPath, const QString &name) {
 void DisplayKDirModel::newDir(const QString &dirPath, const QString &name) {
 	QDir dir(getBaseDir(dirPath));
 	if (dir.exists(name)) {
-		qWarning() << "Dir " << name << " already exists";
+		Q_EMIT notificationForUser(QStringLiteral("%1/%2 already exists").arg(dirPath).arg(name));
+		//qWarning() << "Dir " << name << " already exists";
 		return;
 	}
 	dir.mkdir(name);

@@ -313,6 +313,13 @@ PlasmoidItem {
 						notificationBar.expanded = true
 					}
 				}
+				Connections {
+					target: dirModel
+					function onNotificationForUser(message) {
+						notificationLbl.text = message
+						notificationBar.expanded = true
+					}
+				}
 			}
 
 			PlasmaComponents.ToolButton {
@@ -337,6 +344,16 @@ PlasmoidItem {
 				nameQuerySheet.isForDir = isForDir
 				nameInputField.text = ""
 				visible = true
+				nameInputField.forceActiveFocus()
+			}
+
+			function acceptInput() {
+				if (isForDir) {
+					dirModel.newDir(path, nameInputField.text)
+				} else {
+					dirModel.newFile(path, nameInputField.text)
+				}
+				visible = false
 			}
 
 			title: isForDir ? "Create new Directory" :  "Create new Note"
@@ -349,6 +366,7 @@ PlasmoidItem {
 					id: nameInputField
 					Layout.fillWidth: true
 					placeholderText: nameQuerySheet.isForDir ? "DirectoryName" : "FileName.md"
+					onAccepted: nameQuerySheet.acceptInput()
 				}
 
 				RowLayout {
@@ -356,21 +374,14 @@ PlasmoidItem {
 					Layout.fillWidth: true
 					Layout.alignment: Qt.AlignRight
 
-					PlasmaComponents.ToolButton {
+					Button {
 						text: "Ok"
 						icon.name: "dialog-ok"
 						Layout.alignment: Qt.AlignRight
 						enabled: nameInputField.text.length > 0
-						onClicked: {
-							if (nameQuerySheet.isForDir) {
-								dirModel.newDir(contextMenu.path, nameInputField.text)
-							} else {
-								dirModel.newFile(contextMenu.path, nameInputField.text)
-							}
-							nameQuerySheet.visible = false
-						}
+						onClicked: nameQuerySheet.acceptInput()
 					}
-					PlasmaComponents.ToolButton {
+					Button {
 						text: "Cancel"
 						icon.name: "dialog-cancel"
 						Layout.alignment: Qt.AlignRight

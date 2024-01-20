@@ -59,6 +59,7 @@ public:
 Q_SIGNALS:
 	void notePathChanged();
 	void basePathChanged();
+	void notificationForUser(const QString &message);
 
 private:
 	// if path is a directory, it is returned.
