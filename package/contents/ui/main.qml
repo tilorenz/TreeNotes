@@ -18,6 +18,7 @@ PlasmoidItem {
 
 	TreeNotesPlugin.DirModel {
 		id: dirModel
+		basePath: Plasmoid.configuration.basePath
 
 		// handle signals manually to make bidirectional binding
 		onNotePathChanged: {
@@ -29,6 +30,7 @@ PlasmoidItem {
 
 	TreeNotesPlugin.NoteModel {
 		id: noteModel
+		basePath: Plasmoid.configuration.basePath
 
 		onNotePathChanged: {
 			dirModel.notePath = notePath
@@ -37,12 +39,21 @@ PlasmoidItem {
 		}
 		onBasePathChanged: {
 			dirModel.basePath = basePath
-			plasmoid.configuration.basePath = basePath
+			Plasmoid.configuration.basePath = basePath
 		}
 	}
 
 	Component.onCompleted: {
-		noteModel.basePath = plasmoid.configuration.basePath || noteModel.getDefaultBasePath()
+		if (Plasmoid.configuration.basePath === "") {
+			console.log('Base path empty, setting to default')
+			Plasmoid.configuration.basePath = noteModel.getDefaultBasePath()
+		}
+		Plasmoid.configuration.valueChanged.connect((key, value) => {
+			if (key === "basePath") {
+				noteModel.basePath = Plasmoid.configuration.basePath
+				//console.log("changing basePath::")
+			}
+		});
 		if (plasmoid.configuration.notePath) {
 			noteModel.notePath = plasmoid.configuration.notePath
 		}
