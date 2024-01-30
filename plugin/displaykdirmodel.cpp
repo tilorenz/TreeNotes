@@ -14,7 +14,7 @@ void DisplayKDirModel::setBasePath(const QString &path) {
 		return;
 	}
 	m_basePath = path;
-	KDirModel::openUrl(QUrl::fromLocalFile(m_basePath));
+	QFileSystemModel::setRootPath(m_basePath);
 
 	Q_EMIT basePathChanged();
 }
@@ -36,15 +36,23 @@ QHash<int, QByteArray> DisplayKDirModel::roleNames() const {
 }
 
 QVariant DisplayKDirModel::data(const QModelIndex &index, int role) const {
-	const KFileItem item = qvariant_cast<KFileItem>(KDirModel::data(index, KDirModel::FileItemRole));
+	//qWarning() << "dkdm: data: " << index << ", role: " << role;
 
 	switch (role) {
 		case DisplayRole:
-			return item.name();
+			{
+				return QFileSystemModel::data(index, QFileSystemModel::FileNameRole);
+			}
 		case PathRole:
-			return item.localPath();
+			{
+				QVariant path = QFileSystemModel::data(index, QFileSystemModel::FilePathRole);
+				//qWarning() << "dkdm path:: " << path;
+				return path;
+			}
 		case IsDirRole:
-			return item.isDir();
+			{
+				return QFileSystemModel::isDir(index);
+			}
 	}
 
 	qWarning() << "Invalid role requested: " << role << "(index: " << index << ")";

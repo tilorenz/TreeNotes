@@ -148,6 +148,19 @@ PlasmoidItem {
 
 			TreeView {
 				id: fileTree
+
+				Component.onCompleted: {
+					fileTree.rootIndex = dirModel.indexForPath(dirModel.basePath)
+				}
+
+				Connections {
+					target: dirModel
+					function onBasePathChanged() {
+						console.log("bpc, connection", dirModel.basePath)
+						fileTree.rootIndex = dirModel.indexForPath(dirModel.basePath)
+					}
+				}
+
 				property bool expanded: true
 				// setting the width directly rather than using saveState() / restoreState()
 				// allows to animate collapsing and expanding
@@ -186,6 +199,7 @@ PlasmoidItem {
 				pointerNavigationEnabled: false
 
 				delegate: TreeViewDelegate {
+					id: treeDelegate
 					onClicked: {
 						if (isDirectory) {
 							treeView.toggleExpanded(row)
@@ -204,6 +218,7 @@ PlasmoidItem {
 					function showContextMenu() {
 						contextMenu.path = filePath
 						contextMenu.isDirectory = isDirectory
+						contextMenu.row = row
 						contextMenu.popup()
 						//if (isDirectory) {
 
@@ -229,6 +244,7 @@ PlasmoidItem {
 					id: contextMenu
 					property string path
 					property bool isDirectory
+					property int row
 					MenuItem {
 						text: "Open externally"
 						onTriggered: {
@@ -257,6 +273,7 @@ PlasmoidItem {
 						text: "Set as root directory"
 						visible: contextMenu.isDirectory
 						onTriggered: {
+							fileTree.rootIndex = fileTree.index(contextMenu.row, 0)
 							dirModel.basePath = contextMenu.path
 						}
 					}

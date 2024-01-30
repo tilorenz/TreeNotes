@@ -6,11 +6,11 @@
 #ifndef DISPLAYKDIRMODEL_H
 #define DISPLAYKDIRMODEL_H
 
-#include <KDirModel>
+#include <QFileSystemModel>
 #include <QUrl>
 #include <QDir>
 
-class DisplayKDirModel: public KDirModel {
+class DisplayKDirModel: public QFileSystemModel {
 	Q_OBJECT
 
 	Q_PROPERTY(QString notePath READ notePath WRITE setNotePath NOTIFY notePathChanged)
@@ -18,7 +18,7 @@ class DisplayKDirModel: public KDirModel {
 
 public:
 	DisplayKDirModel(QObject *parent = nullptr) :
-		KDirModel(parent)
+		QFileSystemModel(parent)
 	{
 
 	}
@@ -55,6 +55,10 @@ public:
 	Q_INVOKABLE void newDir(const QString &dirPath, const QString &name);
 
 	Q_INVOKABLE void cdUp();
+
+	Q_INVOKABLE QModelIndex indexForPath(const QString &path, int column = 0) const {
+		return QFileSystemModel::index(path, column);
+	}
 
 Q_SIGNALS:
 	void notePathChanged();
