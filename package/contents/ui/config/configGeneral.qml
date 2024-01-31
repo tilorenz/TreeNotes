@@ -1,3 +1,8 @@
+/*
+    SPDX-FileCopyrightText: 2024 Tino Lorenz <tilrnz@gmx.net>
+    SPDX-License-Identifier:  GPL-3.0-or-later
+*/
+
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
 import QtQuick.Controls

@@ -1,6 +1,6 @@
 /*
-    SPDX-FileCopyrightText: 2023 Tino Lorenz <tilrnz@gmx.net>
-    SPDX-License-Identifier: LGPL-2.1-or-later
+    SPDX-FileCopyrightText: 2024 Tino Lorenz <tilrnz@gmx.net>
+    SPDX-License-Identifier:  GPL-3.0-or-later
 */
 
 #include "notemodel.h"
