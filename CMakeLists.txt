@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(plasmoid-treenotes)
 
 set(QT_MIN_VERSION "6.6.0")
-set(KF6_MIN_VERSION "5.240.0")
+set(KF6_MIN_VERSION "6.0.0")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -26,8 +26,9 @@ include(KDEGitCommitHooks)
 include(ECMDeprecationSettings)
 include(ECMQmlModule)
 
+find_package(Plasma ${KF6_MIN_VERSION} REQUIRED)
+
 find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
-    Plasma
     I18n
     KIO
 )
